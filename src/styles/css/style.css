@@ -129,3 +129,8 @@
 [data-state="open"] > .dialog-overlay {
   z-index: 21999 !important;
 }
+.wrapper{
+  /* border-radius: 5px !important; */
+  /* background-color: 0 !important; */
+  /* box-shadow: none !important; */
+}

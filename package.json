@@ -19,6 +19,7 @@
   "dependencies": {
     "@ag-grid-community/csv-export": "^32.3.5",
     "@ag-grid-enterprise/excel-export": "^32.3.5",
+    "@headlessui/react": "^2.2.4",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-dropdown-menu": "^2.1.12",

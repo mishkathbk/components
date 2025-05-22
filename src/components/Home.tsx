@@ -11,6 +11,7 @@ import { LoginApi } from "@/services/login/authServices";
 import { startTokenRefreshInterval } from "@/api-config/tokenManager";
 import { RowGrid } from "./tables/RowGrid";
 import SearchAutoControlled from "./dropdowns/SearchAutoControlled";
+import ComboBoxSearch from "./dropdowns/ComboBoxSearch";
 
 const Home = () => {
 
@@ -29,13 +30,14 @@ const Home = () => {
   // useEffect(() => {
   //   startTokenRefreshInterval();
   // }, []);
-  
+
   return (
     <div className="flex flex-col gap-[2rem]">
       <div className="flex gap-[1rem] flex-wrap">
         <DropdownMultiSelect dataArray={multiSelectArray} selected={selected} setSelected={setSelected} />
         {/* <DropdownSearch /> */}
-        <SearchAutoControlled/>
+        {/* <SearchAutoControlled /> */}
+        <ComboBoxSearch/>
         <DropdownRadio />
         {/* <NormalSelect /> */}
         <DropdownCalendar />

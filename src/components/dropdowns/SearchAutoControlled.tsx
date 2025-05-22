@@ -44,7 +44,7 @@ const SearchAutoControlled = () => {
         console.log("Cleared");
     };
     return (
-        <div><ReactSearchAutocomplete
+        <ReactSearchAutocomplete
             className="w-[500px]"
             items={items}
             onSearch={handleOnSearch}
@@ -54,10 +54,10 @@ const SearchAutoControlled = () => {
             onClear={handleOnClear}
             showIcon={false}
             placeholder='item name'
-            
+
             styling={{ zIndex: 4 }} // To display it on top of the search box below
             autoFocus
-        /></div>
+        />
     )
 }
 

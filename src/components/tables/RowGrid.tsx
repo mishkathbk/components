@@ -33,29 +33,37 @@ import {
 } from "@/components/ui/table"
 import { DropdownSearch } from "../dropdowns/DropdownSearch"
 import { DropdownSearchForGrid } from "../dropdowns/DropdownSearchForGrid"
+import SearchAutoControlled from "../dropdowns/SearchAutoControlled"
+import { ReactSearchAutocomplete } from "react-search-autocomplete"
+import ComboBoxSearch from "../dropdowns/ComboBoxSearch"
 
 const detailsOptions = [
     {
+        id: 0,
         details: "detail1",
         unit: "unit1",
         rate: 520,
     },
     {
+        id: 1,
         details: "detail2",
         unit: "unit2",
         rate: 10,
     },
     {
+        id: 2,
         details: "detail3",
         unit: "unit3",
         rate: 30,
     },
     {
+        id: 3,
         details: "detail4",
         unit: "unit4",
         rate: 40,
     },
     {
+        id: 4,
         details: "detail5",
         unit: "unit5",
         rate: 5,
@@ -75,7 +83,7 @@ export type Payment = {
 }
 
 const detailsArray = detailsOptions.map(item => item.details);
-
+console.log("detailsArray::::", detailsArray)
 export function RowGrid() {
     const [tableData, setTableData] = React.useState<Payment[]>([
         {
@@ -153,7 +161,34 @@ export function RowGrid() {
                 const rowIndex = row.index;
                 return (
                     <div className="flex flex-col gap-1">
-                        <DropdownSearchForGrid
+                        <ComboBoxSearch searchArray={detailsArray} selected={tableData[rowIndex].details || ""} onSelect={(selectedLabel) => {
+                            const selectedDetail = detailsOptions.find(
+                                (d) => d.details === selectedLabel
+                            );
+                            setTableData((prev) => {
+                                const updated = [...prev];
+                                const rowData = updated[rowIndex];
+
+                                const quantity = rowData.quantity || 0;
+                                const rate = selectedDetail?.rate ?? 0;
+                                const amount = quantity * rate;
+                                const discountAmount = calculateDiscountAmount(
+                                    amount,
+                                    rowData.discountPercentage
+                                );
+
+                                updated[rowIndex] = {
+                                    ...rowData,
+                                    details: selectedLabel,
+                                    unit: selectedDetail?.unit ?? "",
+                                    rate,
+                                    amount: parseFloat(amount.toFixed(2)),
+                                    total: parseFloat((amount - discountAmount).toFixed(2)),
+                                };
+                                return updated;
+                            });
+                        }} />
+                        {/* <DropdownSearchForGrid
                             placeholder="item name"
                             selected={tableData[rowIndex].details}
                             searchData={detailsArray}
@@ -181,7 +216,7 @@ export function RowGrid() {
                                     return updated;
                                 });
                             }}
-                        />
+                        /> */}
                         <textarea
                             placeholder="item details"
                             className="border rounded px-2 py-1"
@@ -423,7 +458,7 @@ export function RowGrid() {
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="align-baseline ">
+                                        <TableCell key={cell.id} className="!align-baseline ">
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
