@@ -199,21 +199,21 @@ const DynamicAgGrid = ({
   //   }
   // }, [currentPage, gridApi]);
 
-  const doesRowMatchFilter = (node: IRowNode) => {
-    if (!filterText || !node.data) return true;
+  // const doesRowMatchFilter = (node: IRowNode) => {
+  //   if (!filterText || !node.data) return true;
 
-    const row = node.data;
-    return Object.entries(row).some(([key, value]) => {
-      // Skip boolean values
-      if (typeof value === 'boolean') return false;
+  //   const row = node.data;
+  //   return Object.entries(row).some(([key, value]) => {
+  //     // Skip boolean values
+  //     if (typeof value === 'boolean') return false;
 
-      // Skip the search if the value is null or undefined
-      if (value == null) return false;
+  //     // Skip the search if the value is null or undefined
+  //     if (value == null) return false;
 
-      // Convert to string and check for match
-      return String(value).toLowerCase().includes(filterText.toLowerCase());
-    });
-  };
+  //     // Convert to string and check for match
+  //     return String(value).toLowerCase().includes(filterText.toLowerCase());
+  //   });
+  // };
 
   const handleQuickFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -275,64 +275,66 @@ const DynamicAgGrid = ({
             </div>
           </div>
 
-          <div className="ag-theme-alpine" style={{ width: "100%" }}>
-            <AgGridReact
-              rowData={rows}
-              columnDefs={visibleColumnDefs}
-              defaultColDef={defaultColDef}
-              // pagination={pagination}
-              paginationAutoPageSize
-              // paginationPageSize={10}
-              // paginationPageSizeSelector={pageSizeList}
-              onGridReady={onGridReady}
-              domLayout="autoHeight"
-              animateRows={true}
-            // isExternalFilterPresent={() => true}
-            // doesExternalFilterPass={doesRowMatchFilter}
-            // onPaginationChanged={() => {
-            //   if (gridApi && pagination) {
-            //     setCurrentPage(gridApi.paginationGetCurrentPage() + 1);
-            //   }
-            // }}
-            />
-          </div>
-          {pagination && (
-            <div className="flex justify-between items-center mt-4">
-              <div>
-                Showing page {currentPage} of {totalPages}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handlePageChange(1)}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-                >
-                  First
-                </button>
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-                >
-                  Next
-                </button>
-                <button
-                  onClick={() => handlePageChange(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-                >
-                  Last
-                </button>
-              </div>
+          {rows ? <div>
+            <div className="ag-theme-alpine" style={{ width: "100%" }}>
+              <AgGridReact
+                rowData={rows}
+                columnDefs={visibleColumnDefs}
+                defaultColDef={defaultColDef}
+                // pagination={pagination}
+                paginationAutoPageSize
+                // paginationPageSize={10}
+                // paginationPageSizeSelector={pageSizeList}
+                onGridReady={onGridReady}
+                domLayout="autoHeight"
+                animateRows={true}
+              // isExternalFilterPresent={() => true}
+              // doesExternalFilterPass={doesRowMatchFilter}
+              // onPaginationChanged={() => {
+              //   if (gridApi && pagination) {
+              //     setCurrentPage(gridApi.paginationGetCurrentPage() + 1);
+              //   }
+              // }}
+              />
             </div>
-          )}
+            {pagination && (
+              <div className="flex justify-between items-center mt-4">
+                <div>
+                  Showing page {currentPage} of {totalPages}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handlePageChange(1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                  >
+                    First
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                  >
+                    Next
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                  >
+                    Last
+                  </button>
+                </div>
+              </div>
+            )}
+          </div> : <div className="flex justify-center items-center h-full w-full">Loading....</div>}
         </div>
       </div>
     </>

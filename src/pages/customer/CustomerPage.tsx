@@ -8,7 +8,7 @@ const CustomerPage = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
-    console.log("search::::",search)
+    console.log("search::::", search)
     const [pageSize, setPageSize] = useState(10);
 
     const getCustomerApi = async (currentPage: number): Promise<any> => {
@@ -35,7 +35,7 @@ const CustomerPage = () => {
     useEffect(() => {
         getCustomerApi(currentPage);
 
-    }, [currentPage,search]);
+    }, [currentPage, search]);
     console.log("customerData:::::", customerData)
     console.log("currentPage:::::::;", currentPage)
 
