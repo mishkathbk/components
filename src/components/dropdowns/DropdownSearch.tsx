@@ -31,13 +31,12 @@
     "thailand",
   ];
   type Props = {
-    searchData: string[]
+    // searchData: string[]
     onSelect: ((value: string) => void)
   }
-  export function DropdownSearch({ searchData, onSelect }: Props) {
+  export function DropdownSearch({  onSelect }: Props) {
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState("");
-    console.log("value:::::::", value)
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger >

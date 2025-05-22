@@ -1,7 +1,6 @@
 import * as React from "react"
 import {
     ColumnDef,
-    ColumnFiltersState,
     SortingState,
     VisibilityState,
     flexRender,
@@ -11,18 +10,9 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 import {
     Table,
     TableBody,
@@ -31,10 +21,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { DropdownSearch } from "../dropdowns/DropdownSearch"
-import { DropdownSearchForGrid } from "../dropdowns/DropdownSearchForGrid"
-import SearchAutoControlled from "../dropdowns/SearchAutoControlled"
-import { ReactSearchAutocomplete } from "react-search-autocomplete"
 import ComboBoxSearch from "../dropdowns/ComboBoxSearch"
 
 const detailsOptions = [
@@ -77,7 +63,7 @@ export type Payment = {
     quantity: number
     rate: number
     amount: number
-    discountPercentage: number // Changed from discount to discountPercentage
+    discountPercentage: number 
     total: number
     itemDetailsText?: string
 }
@@ -93,7 +79,7 @@ export function RowGrid() {
             quantity: 1,
             rate: 0,
             amount: 0,
-            discountPercentage: 0, // Initialize as 0%
+            discountPercentage: 0, 
             total: 0,
         }
     ])
@@ -117,7 +103,6 @@ export function RowGrid() {
         ])
     }
 
-    // Format number to always show 2 decimal places
     const formatNumber = (num: number) => {
         return num.toFixed(2)
     }
@@ -131,12 +116,12 @@ export function RowGrid() {
         return parseFloat(num.toFixed(2))
     }
 
-    // Calculate discount amount from percentage
+    //  discount amount from percentage
     const calculateDiscountAmount = (amount: number, percentage: number) => {
         return amount * (percentage / 100)
     }
 
-    // Calculate summary values
+    //  summary values
     const subtotal = tableData.reduce((sum, row) => sum + (row.amount || 0), 0)
     const totalDiscountAmount = tableData.reduce((sum, row) => sum + calculateDiscountAmount(row.amount, row.discountPercentage), 0)
     const totalAmount = subtotal - totalDiscountAmount - calculateDiscountAmount(subtotal, overallDiscountPercentage) + otherCharges
@@ -188,35 +173,6 @@ export function RowGrid() {
                                 return updated;
                             });
                         }} />
-                        {/* <DropdownSearchForGrid
-                            placeholder="item name"
-                            selected={tableData[rowIndex].details}
-                            searchData={detailsArray}
-                            onSelect={(selectedLabel) => {
-                                const selectedDetail = detailsOptions.find(
-                                    (d) => d.details === selectedLabel
-                                );
-                                setTableData((prev) => {
-                                    const updated = [...prev];
-                                    const rowData = updated[rowIndex];
-
-                                    const quantity = rowData.quantity || 0;
-                                    const rate = selectedDetail?.rate ?? 0;
-                                    const amount = quantity * rate;
-                                    const discountAmount = calculateDiscountAmount(amount, rowData.discountPercentage);
-
-                                    updated[rowIndex] = {
-                                        ...rowData,
-                                        details: selectedLabel,
-                                        unit: selectedDetail?.unit ?? "",
-                                        rate,
-                                        amount: parseFloat(amount.toFixed(2)),
-                                        total: parseFloat((amount - discountAmount).toFixed(2)),
-                                    };
-                                    return updated;
-                                });
-                            }}
-                        /> */}
                         <textarea
                             placeholder="item details"
                             className="border rounded px-2 py-1"
@@ -504,7 +460,6 @@ export function RowGrid() {
                                 className="w-16 border px-1 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 value={overallDiscountPercentage}
                                 onChange={(e) => {
-                                    // Limit percentage to 0-100
                                     let value = Math.min(100, Math.max(0, parseInput(e.target.value)));
                                     if (isNaN(value)) value = 0;
                                     setOverallDiscountPercentage(value)
