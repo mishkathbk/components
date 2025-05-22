@@ -6,6 +6,10 @@ import { AllCommunityModule, ModuleRegistry, CsvExportModule } from "ag-grid-com
 // import { ExcelExportModule } from 'ag-grid-enterprise';
 import { DropdownMultiSelect } from "../dropdowns/DropdownMultiSelect";
 import { NormalSelect } from "../selects/NormalSelect";
+import { Dialog, DialogOverlay, DialogTrigger } from "../ui/dialog";
+import { FaEye } from "react-icons/fa";
+import { PreviewModal } from "../uploads/PreviewModal";
+import CustomerViewModal from "../modal/CustomerViewModal";
 // import { DropdownMultiSelect } from "../dropdowns/DropdownMultiSelect";
 
 ModuleRegistry.registerModules([AllCommunityModule, CsvExportModule]);
@@ -59,12 +63,13 @@ const DynamicAgGrid = ({
   const ActionCellRenderer = (props: any) => {
     return (
       <div className="flex gap-[1rem] items-center justify-between">
-        <button
-          onClick={() => onEdit(props.data)}
-          className="px-2 py-0.5 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-        >
-          View
-        </button>
+        <Dialog >
+          <DialogTrigger>
+            <FaEye className="text-gray-600 hover:text-blue-600 cursor-pointer" />
+          </DialogTrigger>
+          <DialogOverlay className="z-[22000] bg-black/50" />
+          <CustomerViewModal data={props.data} />
+        </Dialog>
         <button
           onClick={() => onDelete(props.data)}
           className="px-2 py-0.5 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
@@ -209,9 +214,9 @@ const DynamicAgGrid = ({
 
   const handleQuickFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // setSearch(value)
-    setFilterText(value);
-    gridApi?.onFilterChanged();
+    setSearch(value)
+    // setFilterText(value);
+    // gridApi?.onFilterChanged();
   };
 
   const exportExcel = () => {
@@ -277,8 +282,8 @@ const DynamicAgGrid = ({
             onGridReady={onGridReady}
             domLayout="autoHeight"
             animateRows={true}
-            isExternalFilterPresent={() => true}
-            doesExternalFilterPass={doesRowMatchFilter}
+          // isExternalFilterPresent={() => true}
+          // doesExternalFilterPass={doesRowMatchFilter}
           // onPaginationChanged={() => {
           //   if (gridApi && pagination) {
           //     setCurrentPage(gridApi.paginationGetCurrentPage() + 1);
