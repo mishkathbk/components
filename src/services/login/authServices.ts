@@ -1,4 +1,4 @@
-import { axiosConfig } from "@/api-config/axiosConfig";
+import  axiosConfig  from "@/api-config/axiosConfig";
 
 export const LoginApi = {
   login: async function (body: object) {

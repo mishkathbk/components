@@ -8,6 +8,15 @@ export function isTokenExpired(token: string): boolean {
     return true;
   }
 }
+const getTokenExpiryTime = (token: string | null): number | null => {
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000;
+  } catch {
+    return null;
+  }
+};
 
 export function getToken() {
   const token = window.localStorage.getItem("accessToken");
@@ -27,43 +36,49 @@ export function clearTokens() {
   window.localStorage.removeItem("accessToken");
   window.localStorage.removeItem("refreshToken");
 }
+export const refreshTokens = async (): Promise<boolean> => {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
 
-// export function attachAuthInterceptor(axiosInstance: any) {
-//   axiosInstance.interceptors.request.use((config: any) => {
-//     const token = getToken();
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   });
-// }
+  try {
+    const response = await LoginApi.login({
+      userName: "hruser",
+      password: "hr123",
+      refreshToken,
+    });
 
-export function startTokenRefreshInterval() {
-  setInterval(async () => {
-    console.log("working...");
-    const token = getToken();
-    if (!token) return;
-    // if (!isTokenExpired(token)) return;
-
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) return;
-
-    try {
-      const response = await LoginApi.login({
-        userName: "hruser",
-        password: "hr123",
-        refreshToken: refreshToken,
-      });
-      const accessToken = response.result.tokenModel.token;
-      const newRefreshToken = response.result.tokenModel.refreshToken;
-
-      setTokens(accessToken, newRefreshToken);
-
-      console.log("Token refreshed successfully");
-    } catch (error) {
-      console.error("Refresh failed. Logging out.");
-      clearTokens();
-      window.location.href = "/login";
+    if (response.status === 200) {
+      setTokens(
+        response.result.tokenModel.token,
+        response.result.tokenModel.refreshToken
+      );
+      return true;
     }
-  }, 60 * 1000);
-}
+    return false;
+  } catch (error) {
+    console.error("Refresh failed:", error);
+    return false;
+  }
+};
+
+let refreshTimeout: NodeJS.Timeout | null = null;
+export const scheduleTokenRefresh = (): void => {
+  if (refreshTimeout) clearTimeout(refreshTimeout);
+
+  const token = getToken();
+  const expiryTime = getTokenExpiryTime(token);
+
+  if (!token || !expiryTime) return;
+
+  const refreshTime = expiryTime - Date.now() - 60000; 
+
+  if (refreshTime <= 0) {
+    refreshTokens();
+    return;
+  }
+
+  refreshTimeout = setTimeout(async () => {
+    await refreshTokens();
+    scheduleTokenRefresh(); // Reschedule for new token
+  }, refreshTime);
+};

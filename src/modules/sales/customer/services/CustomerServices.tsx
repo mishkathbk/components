@@ -1,4 +1,4 @@
-import { axiosConfig } from "@/api-config/axiosConfig";
+import  axiosConfig  from "@/api-config/axiosConfig";
 import { crudServices } from "../../../../services/CrudServices";
 
 export const CustomerServicesApi = {

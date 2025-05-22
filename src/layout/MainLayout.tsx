@@ -1,16 +1,18 @@
 "use client";
-import { startTokenRefreshInterval } from "@/api-config/tokenManager";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import { LoginApi } from "@/services/login/authServices";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { setTokens, scheduleTokenRefresh } from "@/api-config/tokenManager";
+import { LoginApi } from "@/services/login/authServices";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import React from "react";
 
 const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   useEffect(() => {
-    const loginAndStartTokenRefresh = async () => {
+    const initialize = async () => {
       try {
         const response = await LoginApi.login({
           userName: "hruser",
@@ -19,34 +21,30 @@ const MainLayout = () => {
         });
 
         if (response.status === 200) {
-          const token = response.result.tokenModel.token;
-          const refreshToken = response.result.tokenModel.refreshToken;
-
-          window.localStorage.setItem("accessToken", token);
-          window.localStorage.setItem("refreshToken", refreshToken);
-
-          console.log("Tokens stored:", { token, refreshToken });
-
-          startTokenRefreshInterval();
+          setTokens(
+            response.result.tokenModel.token,
+            response.result.tokenModel.refreshToken
+          );
+          scheduleTokenRefresh();
         } else {
-          console.error("Login failed:", response);
+          window.location.href = "/login";
         }
-      } catch (err) {
-        console.error("Login error:", err);
+      } catch (error) {
+        console.error("Login error:", error);
+        window.location.href = "/login";
       }
     };
 
-    loginAndStartTokenRefresh();
+    initialize();
   }, []);
+
   return (
     <>
-      <Toaster position="top-right" containerClassName="mt-4" />
+      <Toaster position="top-right" />
       <div className="flex h-screen overflow-hidden">
         <Sidebar sidebarOpen={sidebarOpen} />
-
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
           <main>
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               <Outlet />
