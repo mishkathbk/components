@@ -2,8 +2,8 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Home from "../components/Home";
-import CustomerPage from "@/pages/customer/CustomerPage";
-import CustomerAdd from "@/pages/customer/CustomerAdd";
+import CustomerPage from "@/modules/sales/customer/pages/CustomerPage";
+import CustomerAdd from "@/modules/sales/customer/pages/CustomerAdd";
 
 export const rooter = createBrowserRouter([
   {

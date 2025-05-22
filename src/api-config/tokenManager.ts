@@ -1,24 +1,16 @@
 import { LoginApi } from "@/services/login/authServices";
-import { axiosConfig } from "./axiosConfig";
 
-// export function isTokenExpired(token: string): boolean {
-//   try {
-//     const payload = JSON.parse(atob(token.split(".")[1]));
-//     return Date.now() >= payload.exp * 1000;
-//   } catch {
-//     return true;
-//   }
-// }
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return Date.now() >= payload.exp * 1000;
+  } catch {
+    return true;
+  }
+}
 
 export function getToken() {
-  const token =
-    window.localStorage.getItem("accessToken") ||
-    sessionStorage.getItem("token");
-  // if (!token) {
-  //   window.location.href = "/login";
-  //   return null;
-  // }
-  // console.log("token:::::::::::::::", token);
+  const token = window.localStorage.getItem("accessToken");
   return token;
 }
 
@@ -35,6 +27,16 @@ export function clearTokens() {
   window.localStorage.removeItem("accessToken");
   window.localStorage.removeItem("refreshToken");
 }
+
+// export function attachAuthInterceptor(axiosInstance: any) {
+//   axiosInstance.interceptors.request.use((config: any) => {
+//     const token = getToken();
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   });
+// }
 
 export function startTokenRefreshInterval() {
   setInterval(async () => {

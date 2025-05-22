@@ -69,7 +69,6 @@ export type Payment = {
 }
 
 const detailsArray = detailsOptions.map(item => item.details);
-console.log("detailsArray::::", detailsArray)
 export function RowGrid() {
     const [tableData, setTableData] = React.useState<Payment[]>([
         {

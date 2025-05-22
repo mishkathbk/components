@@ -8,7 +8,6 @@ const CustomerPage = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
-    console.log("search::::", search)
     const [pageSize, setPageSize] = useState(10);
 
     const getCustomerApi = async (currentPage: number): Promise<any> => {
@@ -23,7 +22,7 @@ const CustomerPage = () => {
                 ]
             }
             );
-            console.log("customer response::::::", response);
+            // console.log("customer response::::::", response);
             setCustomerData(response?.result || []);
             setPageSize(response?.responseDetails?.pageSize || 10)
             setTotalItems(response?.responseDetails?.totalCount || 0);
@@ -33,18 +32,16 @@ const CustomerPage = () => {
         }
     };
     useEffect(() => {
+        console.log("currentPage from use effect:::::::;", currentPage)
         getCustomerApi(currentPage);
-
     }, [currentPage, search]);
-    console.log("customerData:::::", customerData)
     console.log("currentPage:::::::;", currentPage)
 
-    const onPageChange = async (newPage: number) => {
+    const onPageChange = (newPage: number) => {
         const totalPages = Math.ceil(totalItems / limit);
         if (newPage < 1 || newPage > totalPages) return;
-        await getCustomerApi(newPage);
-        console.log("newPage:::::::", newPage)
-        setCurrentPage(newPage); // This MUST come after successful fetch
+        // await getCustomerApi(newPage);
+        setCurrentPage(newPage);
     };
     return (
         <div>

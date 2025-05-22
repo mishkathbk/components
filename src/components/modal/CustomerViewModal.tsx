@@ -7,7 +7,6 @@ type Props = {
     viewDetails: any
 }
 export default function CustomerViewModal({ isOpen, setIsOpen, viewDetails }: Props) {
-    console.log("viewDetails::::", viewDetails)
     function close() {
         setIsOpen(false)
     }

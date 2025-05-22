@@ -11,21 +11,11 @@ const axiosConfig = axios.create({
 
 axiosConfig.interceptors.request.use(async (config) => {
   const token = getToken();
+  console.log("token:::",token)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;  
 });
-
-// axiosConfig.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response?.status === 401) {
-//       clearTokens();
-//       window.location.href = "/login";
-//     }
-//     return Promise.reject(error);
-//   }
-// );
 
 export { axiosConfig };

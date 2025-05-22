@@ -44,7 +44,7 @@ const CustomerAdd = () => {
     const onSubmit = async (data: TCustomerSchema) => {
         try {
             const codeResponse = await CustomerServicesApi.customerCodeGenerator();
-            console.log("codeResponse:::", codeResponse)
+            // console.log("codeResponse:::", codeResponse)
             if (codeResponse?.status !== 200) {
                 toast.error("Failed to generate customer code");
                 return;
@@ -54,16 +54,17 @@ const CustomerAdd = () => {
                 statusCd: Number(data.statusCd),
                 customerCode: codeResponse.result,
             };
-            console.log("formattedData:::", formattedData)
+            // console.log("formattedData:::", formattedData)
 
             const createResponse = await CustomerServicesApi.createCustomer(formattedData);
-            if (createResponse?.status === 200) {
-                toast.success("Customer created successfully");
-                reset();
-                window.location.href = "/customer";
-            } else {
-                toast.error("Failed to create customer");
+            console.log("createResponse::::",createResponse)
+            if (createResponse?.status != 200) {
+                toast.error(createResponse?.userMessage);
             }
+            toast.success("Customer created successfully");
+            reset();
+            window.location.href = "/customer";
+
         } catch (error) {
             console.error("Error:", error);
             toast.error("An error occurred");

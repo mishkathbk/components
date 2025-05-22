@@ -3,7 +3,6 @@ import { crudServices } from "../../../../services/CrudServices";
 
 export const CustomerServicesApi = {
   createCustomer: async (body: object) => {
-    console.log("body0:::",body)
     try {
       const response = await axiosConfig.post("https://stg.accorelab.com/api/Customer/Create", body, {
         headers: {

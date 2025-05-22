@@ -29,7 +29,7 @@ const Home = () => {
     <div className="flex flex-col gap-[2rem]">
       <div className="flex gap-[1rem] flex-wrap">
         <DropdownMultiSelect dataArray={multiSelectArray} selected={selected} setSelected={setSelected} />
-        <DropdownSearch />
+        {/* <DropdownSearch /> */}
         <DropdownRadio />
         <DropdownCalendar />
       </div>

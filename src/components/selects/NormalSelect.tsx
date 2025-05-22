@@ -16,7 +16,6 @@ type Props = {
   setValue: (value: any) => void
 }
 export function NormalSelect({ options=[], value, setValue }: Props) {
-  console.log("value::::", value)
   return (
     <Select>
       <SelectTrigger className="w-fit !text-gray-700">

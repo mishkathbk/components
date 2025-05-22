@@ -50,13 +50,8 @@ const DynamicAgGrid = ({
   useEffect(() => {
     setRows(rowData);
   }, [rowData]);
-
   const [filterText, setFilterText] = useState("");
   const totalPages = Math.ceil(totalItems / pageSize);
-  const onEdit = (data: any) => {
-    console.log("edited data", data);
-
-  };
   const onDelete = (data: any) => {
     const DeletedArray = rows.filter((items) => items.No != data.No);
     setRows(DeletedArray);
