@@ -6,9 +6,7 @@ import { AllCommunityModule, ModuleRegistry, CsvExportModule } from "ag-grid-com
 // import { ExcelExportModule } from 'ag-grid-enterprise';
 import { DropdownMultiSelect } from "../dropdowns/DropdownMultiSelect";
 import { NormalSelect } from "../selects/NormalSelect";
-import { Dialog, DialogOverlay, DialogTrigger } from "../ui/dialog";
 import { FaEye } from "react-icons/fa";
-import { PreviewModal } from "../uploads/PreviewModal";
 import CustomerViewModal from "../modal/CustomerViewModal";
 // import { DropdownMultiSelect } from "../dropdowns/DropdownMultiSelect";
 
@@ -45,6 +43,9 @@ const DynamicAgGrid = ({
   // onDelete,
   Props) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [viewDetails, setViewDetails] = useState<any>();
+
   const [rows, setRows] = useState<any[]>([]);
   useEffect(() => {
     setRows(rowData);
@@ -63,13 +64,15 @@ const DynamicAgGrid = ({
   const ActionCellRenderer = (props: any) => {
     return (
       <div className="flex gap-[1rem] items-center justify-between">
-        <Dialog >
-          <DialogTrigger>
-            <FaEye className="text-gray-600 hover:text-blue-600 cursor-pointer" />
-          </DialogTrigger>
-          <DialogOverlay className="z-[22000] bg-black/50" />
-          <CustomerViewModal data={props.data} />
-        </Dialog>
+        <button
+          onClick={() => {
+            setIsOpen(!isOpen)
+            setViewDetails(props.data)
+          }}
+          className="px-2 py-0.5  rounded  text-sm"
+        >
+          <FaEye className="text-gray-600 hover:text-blue-600 cursor-pointer" />
+        </button>
         <button
           onClick={() => onDelete(props.data)}
           className="px-2 py-0.5 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
@@ -238,98 +241,101 @@ const DynamicAgGrid = ({
   //   console.log(" row style params:::", params)
   // };
   return (
-    <div className="w-full">
-      <div className="bg-white rounded-xl p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-md font-medium text-gray-800">{title}</h2>
-          <a href="/customer-add" className="px-[0.8rem] py-[0.5rem] text-[0.9rem] font-medium text-accoreBlue rounded-sm border-2">
-            + Add Customer
-          </a>
-        </div>
+    <>
+      <CustomerViewModal viewDetails={viewDetails} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <div className="w-full">
+        <div className="bg-white rounded-xl p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-md font-medium text-gray-800">{title}</h2>
+            <a href="/customer-add" className="px-[0.8rem] py-[0.5rem] text-[0.9rem] font-medium text-accoreBlue rounded-sm border-2">
+              + Add Customer
+            </a>
+          </div>
 
-        <div className="mb-4 flex  gap-[2rem] w-full">
-          <input
-            type="text"
-            placeholder="Search..."
-            onChange={handleQuickFilter}
-            className="w-[80%] px-4 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 "
-          />
-          {dropDownArray && (
-            <DropdownMultiSelect
-              title="view"
-              dataArray={dropDownArray}
-              selected={selected}
-              setSelected={setSelected}
+          <div className="mb-4 flex  gap-[2rem] w-full">
+            <input
+              type="text"
+              placeholder="Search..."
+              onChange={handleQuickFilter}
+              className="w-[80%] px-4 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 "
             />
-          )}
+            {dropDownArray && (
+              <DropdownMultiSelect
+                title="view"
+                dataArray={dropDownArray}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
 
-          <div>
-            <button onClick={() => exportAsCsv()} className="h-full cursor-pointer px-[0.5rem] text-gray-600 rounded-lg border-2">
-              Export as Excel
-            </button>
-          </div>
-        </div>
-
-        <div className="ag-theme-alpine" style={{ width: "100%" }}>
-          <AgGridReact
-            rowData={rows}
-            columnDefs={visibleColumnDefs}
-            defaultColDef={defaultColDef}
-            // pagination={pagination}
-            paginationAutoPageSize
-            // paginationPageSize={10}
-            // paginationPageSizeSelector={pageSizeList}
-            onGridReady={onGridReady}
-            domLayout="autoHeight"
-            animateRows={true}
-          // isExternalFilterPresent={() => true}
-          // doesExternalFilterPass={doesRowMatchFilter}
-          // onPaginationChanged={() => {
-          //   if (gridApi && pagination) {
-          //     setCurrentPage(gridApi.paginationGetCurrentPage() + 1);
-          //   }
-          // }}
-          />
-        </div>
-        {pagination && (
-          <div className="flex justify-between items-center mt-4">
             <div>
-              Showing page {currentPage} of {totalPages}
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handlePageChange(1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-              >
-                First
-              </button>
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-              >
-                Next
-              </button>
-              <button
-                onClick={() => handlePageChange(totalPages)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-              >
-                Last
+              <button onClick={() => exportAsCsv()} className="h-full cursor-pointer px-[0.5rem] text-gray-600 rounded-lg border-2">
+                Export as Excel
               </button>
             </div>
           </div>
-        )}
+
+          <div className="ag-theme-alpine" style={{ width: "100%" }}>
+            <AgGridReact
+              rowData={rows}
+              columnDefs={visibleColumnDefs}
+              defaultColDef={defaultColDef}
+              // pagination={pagination}
+              paginationAutoPageSize
+              // paginationPageSize={10}
+              // paginationPageSizeSelector={pageSizeList}
+              onGridReady={onGridReady}
+              domLayout="autoHeight"
+              animateRows={true}
+            // isExternalFilterPresent={() => true}
+            // doesExternalFilterPass={doesRowMatchFilter}
+            // onPaginationChanged={() => {
+            //   if (gridApi && pagination) {
+            //     setCurrentPage(gridApi.paginationGetCurrentPage() + 1);
+            //   }
+            // }}
+            />
+          </div>
+          {pagination && (
+            <div className="flex justify-between items-center mt-4">
+              <div>
+                Showing page {currentPage} of {totalPages}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handlePageChange(1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                >
+                  First
+                </button>
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                >
+                  Next
+                </button>
+                <button
+                  onClick={() => handlePageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
+                >
+                  Last
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
